@@ -15,7 +15,7 @@
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:52px}
   .nav-title{font-size:16px;font-weight:600;letter-spacing:-0.3px;color:var(--text)}
   .plan-switcher{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:3px}
-  .psw{padding:5px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .15s;border:none;background:transparent}
+  .psw{padding:5px 12px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .15s;border:none;background:transparent}
   .psw.on{background:var(--bg4);color:var(--text)}
   .plan-view{display:none}
   .plan-view.on{display:block}
@@ -36,10 +36,9 @@
   .phase-time strong{color:var(--accent);font-weight:600}
   .infobar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 13px;font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.55}
   .sec-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:18px 0 8px;padding-left:2px}
-  .excard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .15s}
-  .excard.open{border-color:var(--border2)}
-  .ex-head{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;cursor:pointer;user-select:none}
-  .ex-num{font-size:11px;color:var(--text3);min-width:18px;padding-top:3px;font-variant-numeric:tabular-nums}
+  /* Simple exercise card — no expand */
+  .excard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;padding:13px 14px;display:flex;align-items:flex-start;gap:10px}
+  .ex-num{font-size:11px;color:var(--text3);min-width:18px;padding-top:2px;font-variant-numeric:tabular-nums;flex-shrink:0}
   .ex-main{flex:1;min-width:0}
   .ex-name{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-0.2px;line-height:1.3}
   .ex-dose{font-size:13px;color:var(--text2);margin-top:3px}
@@ -62,14 +61,18 @@
   .t-splits{background:#301010;color:#f08070}
   .t-mobility{background:#1a1a1a;color:#909090}
   .t-warmup{background:#0a2020;color:#50d0b0}
+  /* Expandable card for lifting */
+  .excard-exp{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .15s}
+  .excard-exp.open{border-color:var(--border2)}
+  .ex-head{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;cursor:pointer;user-select:none}
   .ex-chevron{font-size:18px;color:var(--text3);flex-shrink:0;transition:transform .2s;padding-top:1px;line-height:1}
-  .excard.open .ex-chevron{transform:rotate(180deg)}
+  .excard-exp.open .ex-chevron{transform:rotate(180deg)}
   .ex-badges{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
   .badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;letter-spacing:.04em}
   .badge-wt{background:#1a1030;color:var(--purple)}
   .badge-exp{background:#2a1a08;color:var(--orange)}
   .ex-body{display:none;border-top:1px solid var(--border);padding:13px 14px}
-  .excard.open .ex-body{display:block}
+  .excard-exp.open .ex-body{display:block}
   .ex-section{margin-bottom:12px}
   .ex-section:last-child{margin-bottom:0}
   .ex-blabel{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
@@ -90,23 +93,38 @@
   <div class="nav-inner">
     <div class="nav-title">Gym Plans</div>
     <div class="plan-switcher">
-      <button class="psw on" onclick="switchPlan('prehab')">Prehab</button>
+      <button class="psw on" onclick="switchPlan('lower')">Lower</button>
+      <button class="psw" onclick="switchPlan('upper')">Upper</button>
       <button class="psw" onclick="switchPlan('lifting')">Lifting</button>
     </div>
   </div>
 </div>
 
-<div class="plan-view on" id="plan-prehab">
+<!-- LOWER BODY MOBILITY -->
+<div class="plan-view on" id="plan-lower">
   <div class="stats-row">
-    <div class="stat-card"><div class="stat-label">Time</div><div class="stat-val">~90m</div></div>
-    <div class="stat-card"><div class="stat-label">Phases</div><div class="stat-val">6</div></div>
-    <div class="stat-card"><div class="stat-label">Exercises</div><div class="stat-val">30</div></div>
+    <div class="stat-card"><div class="stat-label">Focus</div><div class="stat-val" style="font-size:13px;padding-top:3px">Splits</div></div>
+    <div class="stat-card"><div class="stat-label">Sections</div><div class="stat-val">5</div></div>
+    <div class="stat-card"><div class="stat-label">Exercises</div><div class="stat-val">25</div></div>
     <div class="stat-card"><div class="stat-label">Days/wk</div><div class="stat-val">3×</div></div>
   </div>
-  <div class="tab-scroll" id="prehab-tabs"></div>
-  <div id="prehab-panels"></div>
+  <div class="tab-scroll" id="lower-tabs"></div>
+  <div id="lower-panels"></div>
 </div>
 
+<!-- UPPER BODY MOBILITY -->
+<div class="plan-view" id="plan-upper">
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-label">Focus</div><div class="stat-val" style="font-size:13px;padding-top:3px">HS / MU</div></div>
+    <div class="stat-card"><div class="stat-label">Sections</div><div class="stat-val">4</div></div>
+    <div class="stat-card"><div class="stat-label">Exercises</div><div class="stat-val">10</div></div>
+    <div class="stat-card"><div class="stat-label">Days/wk</div><div class="stat-val">3×</div></div>
+  </div>
+  <div class="tab-scroll" id="upper-tabs"></div>
+  <div id="upper-panels"></div>
+</div>
+
+<!-- LIFTING -->
 <div class="plan-view" id="plan-lifting">
   <div class="stats-row">
     <div class="stat-card"><div class="stat-label">Day A</div><div class="stat-val">~72m</div></div>
@@ -121,120 +139,68 @@
 <div class="bottom-pad"></div>
 
 <script>
-const prehabPhases=[
-  {name:"Soft tissue",time:"~20 min",sub:"Warm up with the sled, then release tissue density before loading.",exercises:[
-    {name:"Sled push + pull",dose:"5 × push + 5 × pull, alternating",tags:["warmup","knee"],
-      cues:"Moderate effort — this is a warm-up, not a sprint. Push: hands on handles, hips low, drive through the full foot. Pull: face away from sled, walk forward pulling with straight arms or over the shoulder.",
-      purpose:"Elevates heart rate and core temperature. Sled work loads the quad and VMO with minimal joint stress since there's no eccentric component — excellent knee prehab."},
-    {name:"Band shoulder mobility",dose:"90 sec each side",tags:["shoulder","mobility"],
-      cues:"Hold a band with both hands wider than shoulder-width. Keep arms straight and pass the band overhead and behind your back in a full arc. Go slow — don't force range. Narrow your grip gradually as mobility improves.",
-      purpose:"Opens the shoulder capsule through full rotation range before any loading. Especially important for overhead athletes — prepares the joint for everything that follows."},
-    {name:"Band chest stretch",dose:"90 sec",tags:["chest","shoulder"],
-      cues:"Anchor band behind you at shoulder height. Hold one or both ends, step forward until you feel tension across the chest. Stand tall, arms back, let the chest open fully. Breathe into the stretch.",
-      purpose:"Opens the anterior chest and pec minor before any pressing or pulling work. Directly counters the rounded shoulder pattern from daily sitting and screen use."},
-    {name:"Lacrosse ball — posterior shoulder",dose:"90 sec each side",tags:["shoulder"],
-      cues:"Pin ball between shoulder blade and wall or floor. Move your arm slowly through different positions while pinned — overhead, across body, by your side. Breathe and let the tissue soften.",
-      purpose:"Infraspinatus and teres minor release — rotator cuff health and posterior capsule mobility. More time here to properly address the tissue given your SLAP history."},
-    {name:"Foam roll — glutes & piriformis",dose:"45 sec each side",tags:["hip","spine"],
-      cues:"Cross ankle over opposite knee (figure-4). Sink into the piriformis. This will be uncomfortable — breathe through it.",
-      purpose:"Hip external rotator release. Tight glutes restrict squat depth and compress the lumbar spine. Directly addresses APT compensation patterns."},
-    {name:"Foam roll — calves & peroneals",dose:"45 sec each leg",tags:["ankle"],
-      cues:"Slow pass — not fast rolling. Rotate foot in and out to hit different heads (gastrocnemius, soleus, peroneals on outer shin).",
-      purpose:"Tight calves are the #1 limiter of ankle dorsiflexion. Cannot get an Asian squat without this. Also critical for soccer ankle stability."},
+// ── LOWER BODY DATA ──────────────────────────────────────────
+const lowerSections = [
+  { label: "Warm-up", exercises: [
+    { name: "Sled push + pull", dose: "5 laps", tags: ["warmup","knee","legs"] },
+    { name: "Foam roll — glutes & piriformis", dose: "", tags: ["hip","spine"] },
+    { name: "Foam roll — calves & peroneals", dose: "", tags: ["ankle","legs"] },
+    { name: "Ankle CARs", dose: "", tags: ["ankle","mobility"] },
+    { name: "Wall ankle stretch", dose: "", tags: ["ankle"] },
+    { name: "Assisted deep squat hold", dose: "2 × 30 sec", tags: ["ankle","hip","spine"] },
   ]},
-  {name:"Mobility",time:"~18 min",sub:"Take joints through full active range. Build usable mobility — range you can control under load.",exercises:[
-    {name:"Chin tucks — supine",dose:"2 × 12, 2 sec hold",tags:["posture"],
-      cues:"Flatten the back of your neck into the floor — not a nod. Think 'make a double chin.' Hold 2 sec. Feel the deep neck flexors engage.",
-      purpose:"Directly counters forward head posture by retraining the deep cervical flexors. The foundational posture exercise."},
-    {name:"Cat-cow",dose:"2 × 10 slow reps",tags:["spine"],
-      cues:"Lead with the tailbone — not just lumbar. Full spinal wave from sacrum to neck. Breathe in on cow (extension), out on cat (flexion). Slow and deliberate.",
-      purpose:"Full spinal segmentation and motor control. Improves independent control of each spinal segment — critical for avoiding butt wink and lower back pain."},
-    {name:"Thread-the-needle",dose:"5 × 3 sec hold, each side",tags:["spine","mobility"],
-      cues:"Anchor the top arm firmly to the floor. Rotate from the mid-back — not the neck or lumbar. Work both sides equally.",
-      purpose:"Thoracic rotation mobility. Critical for volleyball swing mechanics and soccer pivoting."},
-    {name:"Lat stretch",dose:"3 × 30 sec each side",tags:["shoulder","mobility"],
-      cues:"Kneel facing a wall or cable. Extend one arm overhead, hand on wall. Sit back into your hips while keeping the arm extended. Feel the pull along the side of your ribcage and armpit. Posterior tilt the pelvis to maximise the stretch.",
-      purpose:"Targets lat length — a primary limiter of your towel test and overhead shoulder range. Lats internally rotate the shoulder and limit overhead range when tight."},
-    {name:"Ankle CARs",dose:"10 circles each direction, each ankle",tags:["ankle"],
-      cues:"Slow and deliberate — 3+ seconds per full circle. Maximise range at the ankle specifically; don't let the knee or hip compensate. Joint nutrition.",
-      purpose:"Daily joint mobility work for the ankle. Key driver for Asian squat progress. Do this even on rest days."},
-    {name:"Wall ankle stretch",dose:"5 × 5 sec each side",tags:["ankle"],
-      cues:"Keep heel completely flat. Push knee toward your pinky toe. Track how far your foot is from the wall — this is your progress metric.",
-      purpose:"Targets ankle dorsiflexion specifically — the primary limiter for Asian squat and soccer cutting mechanics."},
-    {name:"Assisted deep squat hold",dose:"3 × 30 sec",tags:["ankle","hip","spine"],
-      cues:"Hold a cable tower or post lightly. Sit as low as possible — heels flat ideally. Elevate heels on plates if needed; reduce elevation weekly. Breathe deep into your belly.",
-      purpose:"Integrates ankle dorsiflexion, hip mobility, and lumbar decompression simultaneously. Most efficient single exercise for your Asian squat goal."},
-    {name:"Jefferson curl",dose:"2 × 6, very slow",tags:["spine","mobility"],
-      cues:"Tuck chin first, then curl spine vertebra by vertebra all the way down. Knees soft. Hang at the bottom — breathe. Roll back up from the tailbone. Use very light weight (10–20 lb max). This is a stretch, not a strength move.",
-      purpose:"Loaded posterior chain flexibility. Directly addresses butt wink and lower back pain when bending. Trains the exact range where your back currently hurts — safely and progressively."},
+  { label: "Posture & spine", exercises: [
+    { name: "Chin tucks — supine", dose: "2 × 12", tags: ["posture","spine"] },
+    { name: "Thread-the-needle", dose: "", tags: ["spine","mobility"] },
+    { name: "Lat stretch", dose: "", tags: ["shoulder","mobility"] },
+    { name: "Jefferson curl", dose: "2 × 6, very slow", tags: ["spine","mobility"] },
+    { name: "Wall glides — serratus anterior", dose: "2 × 12", tags: ["shoulder","posture"] },
   ]},
-  {name:"Activation",time:"~13 min",sub:"Wake up chronically underused muscles before loading. Low weight, high intent.",exercises:[
-    {name:"W-Y-T raises",dose:"2 × 10 each letter",tags:["posture","shoulder"],
-      cues:"Prone on incline bench. Before each rep: depress your traps first. W: elbows wide, thumbs up. Y: arms at 45°, thumbs up. T: arms straight out, thumbs up. No shrugging at any point.",
-      purpose:"Targets lower trapezius, mid trap, and rhomboids — the exact muscles inhibited by forward head posture. Directly addresses your identified weakness."},
-    {name:"Lying external rotation",dose:"2 × 15 each arm",tags:["shoulder"],
-      cues:"Lie on your side, elbow bent at 90°, upper arm pinned to your side. Rotate the forearm upward slowly. Pause at end range. Control the return. No compensation at the shoulder or trunk.",
-      purpose:"Rotator cuff strength for both shoulders. Lying position fully isolates the external rotators — no cheating possible. Critical prehab for an overhead athlete."},
-    {name:"Dead bug",dose:"2 × 8 each side",tags:["core","spine"],
-      cues:"Lower back completely flat — press it into the floor and keep it there. Exhale as you extend opposite arm and leg. Never rush. If your back lifts, your range is too big.",
-      purpose:"Deep core stability. Directly addresses why your lower back hurts when bending: these stabilizers are undertrained."},
-    {name:"Glute bridge — 2 sec hold",dose:"2 × 15",tags:["hip","core"],
-      cues:"Drive through heels. Squeeze glutes hard at the top — not your lower back. Keep ribs down. Hold 2 sec. Lower with control.",
-      purpose:"Glute activation and APT correction. Weak glutes allow hip flexors to dominate, tipping the pelvis forward."},
-    {name:"Wrist CARs + loaded wrist prep",dose:"10 circles each direction + 10 sec compression hold",tags:["handstand","mobility"],
-      cues:"CARs: slow full circles at the wrist joint only. Then: place both palms flat on floor, fingers forward. Lean weight progressively into wrists. Comfortable — not painful.",
-      purpose:"Non-negotiable handstand prerequisite. Wrist injuries are the #1 reason people plateau on handstands. Build joint capacity now."},
+  { label: "Prehab", exercises: [
+    { name: "Dead bug", dose: "2 × 8 each side", tags: ["core","spine"] },
+    { name: "Glute bridge — 2 sec hold", dose: "2 × 15", tags: ["hip","core"] },
+    { name: "W-Y-T raises", dose: "2 × 10 each letter", tags: ["posture","shoulder"] },
+    { name: "Lying external rotation", dose: "2 × 15 each arm", tags: ["shoulder"] },
+    { name: "Copenhagen plank — adductor", dose: "2 × 20 sec each side", tags: ["hip","knee"] },
+    { name: "Kettlebell bench tib raises", dose: "3 × 20 each leg", tags: ["ankle","knee"] },
   ]},
-  {name:"Prehab strength",time:"~12 min",sub:"Build muscles and tendons that keep joints healthy for decades. Movements your regular lifting misses.",exercises:[
-    {name:"Wall glides — serratus anterior",dose:"3 × 12",tags:["shoulder","handstand"],
-      cues:"Stand facing a wall, forearms on the wall at shoulder height. Without moving your feet, slide your forearms up the wall as high as possible — let your shoulder blades spread apart and rise (protract and elevate). Pause at the top. Slowly slide back down and let the shoulder blades retract fully at the bottom. No shrugging with the neck.",
-      purpose:"Serratus anterior is the primary scapular stabilizer and most undertrained shoulder muscle. Wall glides train protraction and scapular upward rotation — essential for handstand stability and overhead longevity."},
-    {name:"Copenhagen plank — adductor",dose:"2 × 20 sec each side",tags:["hip","knee"],
-      cues:"Side plank with top leg resting on bench at the knee. Bottom leg lifts slightly off the floor. Keep hips square and stacked — don't rotate.",
-      purpose:"Adductor/groin strength — most undertrained muscle group in soccer athletes. Groin strains are the #2 most common soccer injury. Direct prevention."},
-    {name:"Pike push-up",dose:"3 × 8",tags:["handstand","shoulder"],
-      cues:"Hands shoulder-width, hips high in an inverted V. Bend elbows to lower your head toward the floor. Push back up. At the top: push the floor away and shrug your shoulders up (scapular elevation). This shrug is everything for handstand.",
-      purpose:"Overhead pressing strength in the handstand-specific pattern. The scapular shrug teaches the active shoulder position that keeps you stable inverted."},
-    {name:"Kettlebell bench tib raises",dose:"3 × 20 each leg",tags:["ankle","knee"],
-      cues:"Sit on a bench, leg extended. Rest a kettlebell on top of your foot. Dorsiflex — pull toes up as high as possible against the weight. Hold 1 sec at the top. Lower slowly. Keep the movement controlled throughout — no swinging.",
-      purpose:"Loaded tibialis anterior training. Shin splint prevention, ankle stability, and directly improves dorsiflexion range for your squat."},
+  { label: "Splits & mobility", exercises: [
+    { name: "Pigeon stretch", dose: "60 sec each side", tags: ["hip","splits"] },
+    { name: "Kneeling lunge", dose: "60 sec each side", tags: ["hip","splits"] },
+    { name: "Kneeling quad stretch", dose: "60 sec each side", tags: ["hip","knee","splits"] },
+    { name: "Pancake stretch", dose: "60 sec", tags: ["hip","splits"] },
+    { name: "Active front split + leg lifts", dose: "2 × 30 sec hold + 5 active lifts each side", tags: ["hip","splits"] },
   ]},
-  {name:"Skill work",time:"~20 min",sub:"Handstand and split progressions. Placed after strength work while the body is warm but not exhausted.",exercises:[
-    {name:"Wall handstand — chest to wall",dose:"3 × max hold (build to 30 sec)",tags:["handstand"],
-      cues:"Walk feet up the wall until your BELLY faces it — NOT your back. Hollow body, ribs in, hips over shoulders over wrists. At the top: push the floor away, shrug shoulders into your ears (active scapulae). Peel feet off the wall slightly to find the balance point.",
-      purpose:"Chest-to-wall is the correct alignment drill. Back-to-wall creates a banana shape that won't transfer to freestanding. The scapular shrug is the single most important handstand skill."},
-    {name:"Scapular shrugs — handstand",dose:"3 × 10",tags:["handstand","shoulder"],
-      cues:"In your chest-to-wall handstand: from fully active (shrugged) shoulders, slowly let yourself lower (depress scapulae) then push back up (elevate). Small movement, enormous neurological demand. Stay controlled.",
-      purpose:"Teaches active control of shoulder elevation and depression while inverted — what separates a shaky handstand from a solid one."},
-    {name:"Pigeon stretch",dose:"60 sec each side",tags:["hip","splits"],
-      cues:"From a push-up position, bring one knee forward toward your wrist, shin angled across the mat. Extend the back leg straight. Hips square — don't let them tilt. Sink your weight down and forward over the front shin. Breathe into the outer hip.",
-      purpose:"Deep hip external rotation stretch — directly targets the hip capsule restrictions that limit split depth. Hip opener before all split work."},
-    {name:"Kneeling lunge",dose:"60 sec each side",tags:["splits","hip"],
-      cues:"Posterior pelvic tilt FIRST — tuck your tailbone before leaning forward. Then lean forward from the hip. Feel it deep in the front hip of the back leg, not your lower back. Progressively slide the front foot forward each week.",
-      purpose:"Hip flexor length is the primary limiter of your front split. The pelvic tilt cue is critical — without it you're just arching your lower back, not actually stretching the hip flexor."},
-    {name:"Kneeling quad stretch",dose:"60 sec each side",tags:["splits","hip","knee"],
-      cues:"From a kneeling position, reach back and grab your back foot, pulling it toward your glute. Keep your hips pushed forward and torso upright — don't let the hip drop back. Squeeze the glute of the kneeling leg to increase the stretch.",
-      purpose:"Rectus femoris flexibility — this muscle limits both knee flexion and hip extension simultaneously. Essential for full front split depth and knee health."},
-    {name:"Pancake stretch",dose:"60 sec",tags:["splits","hip"],
-      cues:"Seated straddle. Hinge forward from the hips — not the spine. Keep spine long. Walk hands forward. Each session try to get chest a little closer to the floor. Breathe out to release deeper.",
-      purpose:"Builds adductor and inner hamstring flexibility required for front splits. Also improves Copenhagen plank strength and hip mobility range."},
-    {name:"Active front split + leg lifts",dose:"2 × 30 sec hold + 5 active lifts each side",tags:["splits","hip"],
-      cues:"Get as low as comfortable — use yoga blocks under the front hip if needed. Hold. Then: without changing your pelvis position, actively lift the front heel off the floor 5 times. The lift is what builds active flexibility.",
-      purpose:"The passive stretch gets you into the split; the active lifts build strength to hold and use that range. Active flexibility, not just static lengthening."},
-  ]},
-  {name:"Cool-down",time:"~8 min",sub:"Return the nervous system to baseline and lock in the range you just worked.",exercises:[
-    {name:"Child's pose — lateral reach",dose:"60 sec each side",tags:["spine","shoulder"],
-      cues:"Walk hands to each side to reach the lat and shoulder. Breathe into the stretch. Let hips sink toward heels.",
-      purpose:"Lumbar decompression and lat stretch. Tight lats contribute directly to your towel test limitation and rounded shoulder posture."},
-    {name:"Supine thoracic twist",dose:"5 × 5 sec each side",tags:["spine","mobility"],
-      cues:"Knees stacked, both arms out. Let gravity rotate the spine — don't force it. Feel the rotation through the mid-back, not the lumbar. Breathe out to release slightly deeper each rep.",
-      purpose:"End-range thoracic rotation and decompression. Reinforces rotation range gained during the session."},
-    {name:"Diaphragmatic breathing",dose:"8 slow breaths",tags:["core","spine"],
-      cues:"One hand on chest, one on belly. Breathe so only the belly hand rises — rib cage expands 360° including into the floor. Exhale fully. No rush.",
-      purpose:"Nervous system reset after a demanding session. Also directly improves thoracic mobility over time. Lets the whole session consolidate."},
+  { label: "Cool-down", exercises: [
+    { name: "Child's pose — lateral reach", dose: "60 sec each side", tags: ["spine","shoulder"] },
+    { name: "Supine thoracic twist", dose: "5 × 5 sec each side", tags: ["spine","mobility"] },
+    { name: "Diaphragmatic breathing", dose: "8 slow breaths", tags: ["core","spine"] },
   ]},
 ];
 
+// ── UPPER BODY DATA ──────────────────────────────────────────
+const upperSections = [
+  { label: "Soft tissue", exercises: [
+    { name: "Band shoulder mobility", dose: "", tags: ["shoulder","mobility"] },
+    { name: "Band chest stretch", dose: "", tags: ["chest","shoulder"] },
+    { name: "Lacrosse ball — posterior shoulder", dose: "90 sec each side", tags: ["shoulder"] },
+  ]},
+  { label: "Activation", exercises: [
+    { name: "Wrist CARs", dose: "10 circles each direction", tags: ["handstand","mobility"] },
+    { name: "Pike push-up", dose: "3 × 8", tags: ["handstand","shoulder"] },
+    { name: "Scapular shrugs — handstand", dose: "3 × 10", tags: ["handstand","shoulder"] },
+  ]},
+  { label: "Skill", exercises: [
+    { name: "Weighted pull-ups", dose: "3 × 5–6 reps", tags: ["back","handstand"] },
+    { name: "Wall handstand — chest to wall", dose: "3 × max hold (build to 30 sec)", tags: ["handstand","shoulder"] },
+  ]},
+  { label: "Strength", exercises: [
+    { name: "Incline bench press", dose: "2 × 8–10 reps", tags: ["chest","shoulder"] },
+    { name: "Lateral raise", dose: "2 × 12 reps", tags: ["shoulder"] },
+  ]},
+];
+
+// ── LIFTING DATA ─────────────────────────────────────────────
 const liftingDays=[
   {name:"Day A",sub:"Weighted pull-ups · chest supported row · incline bench · lateral raises · biceps",
    note:"Rest 2 min between sets. Log your pull-up weight every session — when you hit 6 clean reps on all 3 sets, add 2.5 kg next session.",
@@ -272,19 +238,19 @@ const liftingDays=[
     {label:"Back",exercises:[
       {name:"Explosive pull-ups",dose:"3 × 4–6 reps",tags:["back"],badge:"exp",
         cues:"Bodyweight only. Full dead hang to start. Pull as fast and powerfully as possible — the goal is to get your chest to the bar or higher. Control the descent slowly (3 sec eccentric). Full rest between sets — this is power work, not conditioning.",
-        purpose:"Fast-twitch lat and upper back recruitment. Explosive pulling builds the neural drive that makes weighted pull-ups feel smoother on Day A. A different stimulus from every other pulling exercise in the plan."},
+        purpose:"Fast-twitch lat and upper back recruitment. Explosive pulling builds the neural drive that makes weighted pull-ups feel smoother on Day A."},
       {name:"Barbell bent-over row",dose:"2 × 8–10 reps",tags:["back"],
-        cues:"Hip hinge to ~45°. Pull bar to lower sternum — not belly button, not upper chest. Elbows drag back close to your sides. Don't jerk the bar up. Each rep can touch the floor (Pendlay) or stay off it (standard).",
+        cues:"Hip hinge to ~45°. Pull bar to lower sternum — not belly button, not upper chest. Elbows drag back close to your sides. Don't jerk the bar up.",
         purpose:"Heaviest horizontal pull in the week. Builds total back mass: mid-back, lats, rhomboids, and traps all loaded hard."},
     ]},
     {label:"Chest",exercises:[
       {name:"Flat dumbbell bench press",dose:"2 × 10–12 reps",tags:["chest"],
         cues:"Elbows at ~75° from torso — not flared, not fully tucked. Full stretch at the bottom — don't bounce. Scapulae retracted throughout. 3 sec descent.",
-        purpose:"Overall chest mass and thickness from the flat angle. Complements the incline focus on Days A and C. Dumbbells allow independent arm movement — better for long-term shoulder health."},
+        purpose:"Overall chest mass and thickness from the flat angle. Complements the incline focus on Days A and C."},
     ]},
     {label:"Injury prevention",exercises:[
       {name:"Nordic hamstring curl",dose:"3 × 5 slow eccentrics",tags:["knee","hip"],
-        cues:"Anchor feet under a barbell or have a partner hold them. Body straight from knee to head. Lower as slowly as possible — aim for 5 sec down. Use hands to catch yourself at the bottom. Pull back up using hamstrings; assist with hands if not.",
+        cues:"Anchor feet under a barbell or have a partner hold them. Body straight from knee to head. Lower as slowly as possible — aim for 5 sec down. Use hands to catch yourself at the bottom.",
         purpose:"Most evidence-backed ACL and hamstring injury prevention exercise for soccer athletes. Placed last on Day B so it doesn't pre-fatigue the hamstrings for pulling work."},
     ]},
   ]},
@@ -295,7 +261,7 @@ const liftingDays=[
     {label:"Back",exercises:[
       {name:"Weighted pull-ups",dose:"3 × 5–6 reps",tags:["back"],badge:"wt",
         cues:"Attach a plate or use a dip belt. Full dead hang at the bottom. Depress the scapulae before bending the elbows. Drive elbows to hips. Chin clears the bar. Lower slowly — 3 sec eccentric. If form breaks, strip the weight.",
-        purpose:"Second weighted pull-up session of the week — double frequency accelerates strength progression more than any other variable. Match or exceed Day A's reps at the same weight."},
+        purpose:"Second weighted pull-up session of the week — double frequency accelerates strength progression. Match or exceed Day A's reps at the same weight."},
     ]},
     {label:"Chest",exercises:[
       {name:"Incline dumbbell press",dose:"2 × 10–12 reps",tags:["chest"],
@@ -316,28 +282,38 @@ const liftingDays=[
     {label:"Finisher",exercises:[
       {name:"Farmer's carry",dose:"3 × 40 m or 45 sec",tags:["carry"],
         cues:"Heavy dumbbells or trap bar. Stand tall — don't let the load pull your shoulders down. Brace core the entire walk. Short controlled steps. Rest 60 sec between carries.",
-        purpose:"Grip strength (feeds directly into weighted pull-up progression), core anti-lateral-flexion stability, and trap loading. Placed after everything else so grip isn't pre-fatigued for the pulls."},
+        purpose:"Grip strength (feeds directly into weighted pull-up progression), core anti-lateral-flexion stability, and trap loading."},
     ]},
   ]},
 ];
 
-const phaseColors=["#e0e0e0","#60a8f0","#f0a060","#f07060","#a078f0","#50d0b0"];
-const dayColors=["#e0e0e0","#60a8f0","#f0a060"];
-let gnum=0;
+// ── BUILD SIMPLE CARD (no expand) ────────────────────────────
+function buildSimpleCard(ex, num) {
+  const tags = ex.tags.map(t => `<span class="tag t-${t}">${t}</span>`).join('');
+  return `<div class="excard">
+    <span class="ex-num">${num}</span>
+    <div class="ex-main">
+      <div class="ex-name">${ex.name}</div>
+      ${ex.dose ? `<div class="ex-dose">${ex.dose}</div>` : ''}
+      <div class="ex-tags">${tags}</div>
+    </div>
+  </div>`;
+}
 
-function buildCard(ex,num,padded){
-  const tags=ex.tags.map(t=>`<span class="tag t-${t}">${t}</span>`).join('');
-  const badge=ex.badge==='wt'?`<span class="badge badge-wt">+ weight</span>`:ex.badge==='exp'?`<span class="badge badge-exp">explosive</span>`:'';
-  const choice=ex.isChoice?`<div class="choice-box"><div class="choice-label">Options</div><div class="choice-opts">${ex.options}</div></div>`:'';
-  const wrap=padded?'lpad':'';
-  return `<div class="${wrap}"><div class="excard" id="ex${num}" onclick="tog(${num})">
+// ── BUILD EXPANDABLE CARD (lifting) ──────────────────────────
+function buildExpCard(ex, num, padded) {
+  const tags = ex.tags.map(t => `<span class="tag t-${t}">${t}</span>`).join('');
+  const badge = ex.badge === 'wt' ? `<span class="badge badge-wt">+ weight</span>` : ex.badge === 'exp' ? `<span class="badge badge-exp">explosive</span>` : '';
+  const choice = ex.isChoice ? `<div class="choice-box"><div class="choice-label">Options</div><div class="choice-opts">${ex.options}</div></div>` : '';
+  const wrap = padded ? 'lpad' : '';
+  return `<div class="${wrap}"><div class="excard-exp" id="ex${num}" onclick="tog(${num})">
     <div class="ex-head">
       <span class="ex-num">${num}</span>
       <div class="ex-main">
         <div class="ex-name">${ex.name}</div>
         <div class="ex-dose">${ex.dose}</div>
         <div class="ex-tags">${tags}</div>
-        ${badge?`<div class="ex-badges">${badge}</div>`:''}
+        ${badge ? `<div class="ex-badges">${badge}</div>` : ''}
       </div>
       <div class="ex-chevron">⌄</div>
     </div>
@@ -349,61 +325,116 @@ function buildCard(ex,num,padded){
   </div></div>`;
 }
 
-function buildPrehab(){
-  const tabs=document.getElementById('prehab-tabs');
-  const panels=document.getElementById('prehab-panels');
-  prehabPhases.forEach((ph,pi)=>{
-    const tb=document.createElement('button');
-    tb.className='tab-pill'+(pi===0?' on':'');
-    tb.innerHTML=`<span style="width:6px;height:6px;border-radius:50%;background:${phaseColors[pi]};display:inline-block"></span>${ph.name}`;
-    tb.onclick=()=>swTab('prehab',pi);
+// ── BUILD LOWER ───────────────────────────────────────────────
+const lowerColors = ["#e0e0e0","#60a8f0","#f0a060","#f07060","#a078f0"];
+
+function buildLower() {
+  const tabs = document.getElementById('lower-tabs');
+  const panels = document.getElementById('lower-panels');
+  let num = 0;
+  lowerSections.forEach((sec, si) => {
+    const tb = document.createElement('button');
+    tb.className = 'tab-pill' + (si === 0 ? ' on' : '');
+    tb.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:${lowerColors[si]};display:inline-block"></span>${sec.label}`;
+    tb.onclick = () => swLowerTab(si);
     tabs.appendChild(tb);
-    const p=document.createElement('div');
-    p.className='phase-panel'+(pi===0?' on':'');
-    p.id=`prehab-panel-${pi}`;
-    let h=`<div class="phase-header"><div class="phase-name">${ph.name}</div><div class="phase-sub">${ph.sub}</div><div class="phase-time"><span style="color:${phaseColors[pi]}">●</span> <strong>${ph.time}</strong></div></div>`;
-    ph.exercises.forEach(ex=>{gnum++;h+=buildCard(ex,gnum,false);});
-    p.innerHTML=h;panels.appendChild(p);
+
+    const p = document.createElement('div');
+    p.className = 'phase-panel' + (si === 0 ? ' on' : '');
+    p.id = `lower-panel-${si}`;
+    let html = `<div class="phase-header"><div class="phase-name">${sec.label}</div></div>`;
+    sec.exercises.forEach(ex => { num++; html += buildSimpleCard(ex, num); });
+    p.innerHTML = html;
+    panels.appendChild(p);
   });
 }
 
-function buildLifting(){
-  const tabs=document.getElementById('lifting-tabs');
-  const panels=document.getElementById('lifting-panels');
-  liftingDays.forEach((day,di)=>{
-    const tb=document.createElement('button');
-    tb.className='tab-pill'+(di===0?' on':'');
-    tb.innerHTML=`<span style="width:6px;height:6px;border-radius:50%;background:${dayColors[di]};display:inline-block"></span>${day.name}`;
-    tb.onclick=()=>swTab('lifting',di);
+function swLowerTab(idx) {
+  document.querySelectorAll('[id^="lower-panel-"]').forEach((p, i) => p.classList.toggle('on', i === idx));
+  const tabs = document.getElementById('lower-tabs');
+  tabs.querySelectorAll('.tab-pill').forEach((t, i) => t.classList.toggle('on', i === idx));
+  tabs.querySelectorAll('.tab-pill')[idx]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+// ── BUILD UPPER ───────────────────────────────────────────────
+const upperColors = ["#e0e0e0","#60a8f0","#f0a060","#f07060"];
+
+function buildUpper() {
+  const tabs = document.getElementById('upper-tabs');
+  const panels = document.getElementById('upper-panels');
+  let num = 0;
+  upperSections.forEach((sec, si) => {
+    const tb = document.createElement('button');
+    tb.className = 'tab-pill' + (si === 0 ? ' on' : '');
+    tb.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:${upperColors[si]};display:inline-block"></span>${sec.label}`;
+    tb.onclick = () => swUpperTab(si);
     tabs.appendChild(tb);
-    const p=document.createElement('div');
-    p.className='phase-panel'+(di===0?' on':'');
-    p.id=`lifting-panel-${di}`;
-    let chips='<div class="timing-chips">';
-    day.timing.forEach(t=>{chips+=`<div class="tchip">${t.l}: <strong>${t.v}</strong></div>`;});
-    chips+='</div>';
-    let h=`<div class="phase-header" style="padding:12px 16px 0"><div class="phase-name">${day.name}</div><div class="phase-sub">${day.sub}</div></div>${chips}<div class="lpad"><div class="infobar">${day.note}</div></div>`;
-    day.sections.forEach(sec=>{
-      h+=`<div class="sec-label lpad">${sec.label}</div>`;
-      sec.exercises.forEach(ex=>{gnum++;h+=buildCard(ex,gnum,true);});
+
+    const p = document.createElement('div');
+    p.className = 'phase-panel' + (si === 0 ? ' on' : '');
+    p.id = `upper-panel-${si}`;
+    let html = `<div class="phase-header"><div class="phase-name">${sec.label}</div></div>`;
+    sec.exercises.forEach(ex => { num++; html += buildSimpleCard(ex, num); });
+    p.innerHTML = html;
+    panels.appendChild(p);
+  });
+}
+
+function swUpperTab(idx) {
+  document.querySelectorAll('[id^="upper-panel-"]').forEach((p, i) => p.classList.toggle('on', i === idx));
+  const tabs = document.getElementById('upper-tabs');
+  tabs.querySelectorAll('.tab-pill').forEach((t, i) => t.classList.toggle('on', i === idx));
+  tabs.querySelectorAll('.tab-pill')[idx]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+// ── BUILD LIFTING ─────────────────────────────────────────────
+const dayColors = ["#e0e0e0","#60a8f0","#f0a060"];
+let gnum = 0;
+
+function buildLifting() {
+  const tabs = document.getElementById('lifting-tabs');
+  const panels = document.getElementById('lifting-panels');
+  liftingDays.forEach((day, di) => {
+    const tb = document.createElement('button');
+    tb.className = 'tab-pill' + (di === 0 ? ' on' : '');
+    tb.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:${dayColors[di]};display:inline-block"></span>${day.name}`;
+    tb.onclick = () => swTab(di);
+    tabs.appendChild(tb);
+    const p = document.createElement('div');
+    p.className = 'phase-panel' + (di === 0 ? ' on' : '');
+    p.id = `lifting-panel-${di}`;
+    let chips = '<div class="timing-chips">';
+    day.timing.forEach(t => { chips += `<div class="tchip">${t.l}: <strong>${t.v}</strong></div>`; });
+    chips += '</div>';
+    let h = `<div class="phase-header" style="padding:12px 16px 0"><div class="phase-name">${day.name}</div><div class="phase-sub">${day.sub}</div></div>${chips}<div class="lpad"><div class="infobar">${day.note}</div></div>`;
+    day.sections.forEach(sec => {
+      h += `<div class="sec-label lpad">${sec.label}</div>`;
+      sec.exercises.forEach(ex => { gnum++; h += buildExpCard(ex, gnum, true); });
     });
-    p.innerHTML=h;panels.appendChild(p);
+    p.innerHTML = h;
+    panels.appendChild(p);
   });
 }
 
-function tog(n){document.getElementById('ex'+n).classList.toggle('open');}
-function swTab(plan,idx){
-  document.querySelectorAll(`[id^="${plan}-panel-"]`).forEach((p,i)=>p.classList.toggle('on',i===idx));
-  const t=document.getElementById(plan+'-tabs');
-  t.querySelectorAll('.tab-pill').forEach((tb,i)=>tb.classList.toggle('on',i===idx));
-  t.querySelectorAll('.tab-pill')[idx]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+function tog(n) { document.getElementById('ex' + n).classList.toggle('open'); }
+
+function swTab(idx) {
+  document.querySelectorAll('[id^="lifting-panel-"]').forEach((p, i) => p.classList.toggle('on', i === idx));
+  document.getElementById('lifting-tabs').querySelectorAll('.tab-pill').forEach((t, i) => t.classList.toggle('on', i === idx));
+  document.getElementById('lifting-tabs').querySelectorAll('.tab-pill')[idx]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
-function switchPlan(plan){
-  document.querySelectorAll('.plan-view').forEach(p=>p.classList.remove('on'));
-  document.getElementById('plan-'+plan).classList.add('on');
-  document.querySelectorAll('.psw').forEach((b,i)=>b.classList.toggle('on',(i===0&&plan==='prehab')||(i===1&&plan==='lifting')));
+
+function switchPlan(plan) {
+  document.querySelectorAll('.plan-view').forEach(p => p.classList.remove('on'));
+  document.getElementById('plan-' + plan).classList.add('on');
+  document.querySelectorAll('.psw').forEach((b, i) => {
+    b.classList.toggle('on', ['lower','upper','lifting'][i] === plan);
+  });
 }
-buildPrehab();buildLifting();
+
+buildLower();
+buildUpper();
+buildLifting();
 </script>
 </body>
 </html>
